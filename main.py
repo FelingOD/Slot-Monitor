@@ -60,19 +60,19 @@ class SlotRecorder:
         os.makedirs(self.config.get('SETTINGS', 'ScreenshotPath'), exist_ok=True)
         os.makedirs(self.config.get('SETTINGS', 'RecordPath'), exist_ok=True)
 
-    def focus_window(self):
-        """将模拟器窗口置顶"""
-        hwnd = win32gui.FindWindow(None, self.window_title)
-        if hwnd:
-            win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
-            win32gui.SetForegroundWindow(hwnd)
-            time.sleep(0.5)
-            return True
-        return False
+    # def focus_window(self):
+    #     """将模拟器窗口置顶"""
+    #     hwnd = win32gui.FindWindow(None, self.window_title)
+    #     if hwnd:
+    #         win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+    #         win32gui.SetForegroundWindow(hwnd)
+    #         time.sleep(0.5)
+    #         return True
+    #     return False
 
     def capture_area(self, area, filename=None):
         """截取指定区域"""
-        self.focus_window()
+        # self.focus_window()
         try:
             screenshot = pyautogui.screenshot(region=area)
             if filename:
