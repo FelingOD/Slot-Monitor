@@ -12,6 +12,7 @@ INTERVAL_SECONDS = 5  # 每次操作的间隔时间(秒)
 LOG_FILE = "number_log.txt"  # 记录文件
 
 
+
 # 设置pytesseract路径（如果需要）
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
