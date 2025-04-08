@@ -11,15 +11,15 @@ pytesseract.pytesseract.tesseract_cmd = r'E:\Tesseract-OCR\tesseract.exe'
 
 # 定义两个监控区域
 BALANCE_REGION = (460, 55, 250, 95)  # 区域A：余额显示区域 (x, y, w, h)
-COUNTER_REGION = (1720, 1020, 50, 50)  # 区域B：计数器区域 (需根据实际游戏调整)
+COUNTER_REGION = (1720, 1020, 50, 50)  # 区域B：计数器区域
 
 # 初始化数据存储
 data = {
-    "Timestamp": [],
-    "Spin Number": [],
-    "Balance": [],
-    "Change": [],
-    "Counter Value": []
+    "时间戳": [],
+    "SPIN次数": [],
+    "余额": [],
+    "损耗": [],
+    "剩余SPIN次数": []
 }
 spin_count = 0
 previous_balance = None
@@ -59,7 +59,7 @@ def save_screenshot(frame, counter_value):
 def save_to_excel(data):
     """保存数据到Excel"""
     df = pd.DataFrame(data)
-    filename = f"E:\\GitHubProj\\Slot-Monitor\\slot_balance_{datetime.now().strftime('%Y%m%d')}.xlsx"
+    filename = f"E:\\GitHubProj\\Slot-Monitor\\slot数据采集原表{datetime.now().strftime('%Y%m%d')}.xlsx"
     writer = pd.ExcelWriter(filename, engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Balance Data', index=False)
     writer.close()
@@ -70,7 +70,7 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "test1.mp4"
+    video_path = "videos\\test1.mp4"    # 视频绝对地址
     cap = cv2.VideoCapture(video_path)
 
     while cap.isOpened():
@@ -79,7 +79,7 @@ def main():
             break
 
         # 提取两个区域的数值
-        current_balance = extract_number(frame, BALANCE_REGION)
+        current_balance = extract_number(frame, BALANCE_REGION)+30000
         current_counter = extract_number(frame, COUNTER_REGION)
 
         if current_counter is not None:
