@@ -15,7 +15,7 @@ pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 #COUNTER_REGION = (1720, 1020, 50, 50)  # 区域B：计数器区域
 
 BALANCE_REGION = (430, 55, 250, 95)  # 区域A：余额显示区域 (x, y, w, h)
-COUNTER_REGION = (1680, 1020, 50, 50)  # 区域B：计数器区域
+COUNTER_REGION = (1680,1010, 80, 50)  # 区域B：计数器区域
 
 # 初始化数据存储
 data = {
@@ -74,13 +74,14 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "2025-04-08 22-20-59.mp4"    # 视频绝对地址
-    cap = cv2.VideoCapture(video_path)
+    cap = cv2.VideoCapture("2025-04-08 22-20-59.mp4")
+    frame_skip = 3  # 跳帧设置
+    debug_mode = False  # 关闭显示提升速度
 
     while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+        for _ in range(frame_skip):  # 快速跳过中间帧
+            ret, frame = cap.read()
+            if not ret: break
 
         # 提取两个区域的数值
         current_balance = extract_number(frame, BALANCE_REGION)+30000   #数字为押注值
@@ -97,11 +98,11 @@ def main():
                     spin_count += 1
                     change = current_balance - previous_balance if previous_balance is not None else 0
 
-                    data["Timestamp"].append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                    data["Spin Number"].append(spin_count)
-                    data["Balance"].append(current_balance)
-                    data["Change"].append(change)
-                    data["Counter Value"].append(current_counter)
+                    data["时间戳"].append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    data["SPIN次数"].append(spin_count)
+                    data["余额"].append(current_balance)
+                    data["损耗"].append(change)
+                    data["剩余SPIN次数"].append(current_counter)
 
                     print(f"Spin #{spin_count}: 余额={current_balance}, 变化={change}, 计数器={current_counter}")
 
