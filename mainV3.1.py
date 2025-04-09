@@ -7,15 +7,15 @@ import time
 import os
 
 # 设置Tesseract路径
-#pytesseract.pytesseract.tesseract_cmd = r'E:\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'E:\Tesseract-OCR\tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
 # 定义两个监控区域
-#BALANCE_REGION = (460, 55, 250, 95)  # 区域A：余额显示区域 (x, y, w, h)
-#COUNTER_REGION = (1720, 1020, 50, 50)  # 区域B：计数器区域
+BALANCE_REGION = (420, 55, 260, 95)  # 区域A：余额显示区域 (x, y, w, h)
+COUNTER_REGION = (1670, 1010, 90, 50)  # 区域B：计数器区域
 
-BALANCE_REGION = (430, 55, 250, 95)  # 区域A：余额显示区域 (x, y, w, h)
-COUNTER_REGION = (1680, 1020, 50, 50)  # 区域B：计数器区域
+#BALANCE_REGION = (430, 55, 250, 95)  # 区域A：余额显示区域 (x, y, w, h)
+#COUNTER_REGION = (1680, 1020, 50, 50)  # 区域B：计数器区域
 
 # 初始化数据存储
 data = {
@@ -74,7 +74,7 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "2025-04-08 22-20-59.mp4"    # 视频绝对地址
+    video_path = "videos\\4.9.15.11.500.mp4"    # 视频相对地址
     cap = cv2.VideoCapture(video_path)
 
     while cap.isOpened():
@@ -97,11 +97,11 @@ def main():
                     spin_count += 1
                     change = current_balance - previous_balance if previous_balance is not None else 0
 
-                    data["Timestamp"].append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                    data["Spin Number"].append(spin_count)
-                    data["Balance"].append(current_balance)
-                    data["Change"].append(change)
-                    data["Counter Value"].append(current_counter)
+                    data["时间戳"].append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    data["SPIN次数"].append(spin_count)
+                    data["余额"].append(current_balance)
+                    data["损耗"].append(change)
+                    data["剩余SPIN次数"].append(current_counter)
 
                     print(f"Spin #{spin_count}: 余额={current_balance}, 变化={change}, 计数器={current_counter}")
 
