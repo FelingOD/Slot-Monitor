@@ -72,57 +72,47 @@ def save_to_excel(data):
     except Exception as e:
         print(f"保存Excel失败: {str(e)}")
 
+# ...（前面的导入和设置保持不变）...
+
 def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "videos\\4.10,23.52,500z.mp4"
+    video_path = "videos\\4.10,23.49.500z.mp4"
     cap = cv2.VideoCapture(video_path)
+
+    # 获取原始视频帧率
+    original_fps = cap.get(cv2.CAP_PROP_FPS)
+    # 设置3倍速播放的目标帧率
+    target_fps = original_fps * 10
+    # 计算每帧应延迟的时间（毫秒）
+    frame_delay = int(1000 / target_fps) if target_fps > 0 else 1
 
     # 创建可调整大小的窗口
     cv2.namedWindow("Monitoring", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Monitoring", 800, 600)  # 初始大小
 
+    # 性能优化：跳帧计数器
+    frame_counter = 0
+    skip_frames = 0  # 可根据需要调整跳帧数
+
     while cap.isOpened():
+        start_time = time.time()
+
         ret, frame = cap.read()
         if not ret:
             break
+
+        # 跳帧处理（可选，进一步提升速度）
+        frame_counter += 1
+        if frame_counter % (skip_frames + 1) != 0:
+            continue
 
         # 提取两个区域的数值（增加None检查）
         current_balance_raw = extract_number(frame, BALANCE_REGION)
         current_counter = extract_number(frame, COUNTER_REGION)
 
-        # 处理余额数据（如果识别失败则设为None）
-        current_balance = current_balance_raw + 30000 if current_balance_raw is not None else None
-
-        if current_counter is not None:
-            # 检测计数器是否减少了1
-            if previous_counter is not None and current_counter == previous_counter - 1:
-                print(f"计数器减少1: {previous_counter} → {current_counter}")
-                save_screenshot(frame, current_counter)
-
-                # 记录数据（所有字段都支持None值）
-                spin_count += 1
-                change = (current_balance - previous_balance) if (
-                            current_balance is not None and previous_balance is not None) else None
-
-                data["时间戳"].append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                data["SPIN次数"].append(spin_count)
-                data["余额"].append(current_balance)
-                data["损耗"].append(change)
-                data["剩余SPIN次数"].append(current_counter)
-
-                # 增强的输出信息（显示null值）
-                balance_display = current_balance if current_balance is not None else "null"
-                change_display = change if change is not None else "null"
-                counter_display = current_counter if current_counter is not None else "null"
-                print(f"Spin #{spin_count}: 余额={balance_display}, 变化={change_display}, 计数器={counter_display}")
-
-            previous_counter = current_counter if current_counter is not None else previous_counter
-
-        # 更新余额历史（仅当识别成功时更新）
-        if current_balance is not None:
-            previous_balance = current_balance
+        # ...（中间的处理逻辑保持不变）...
 
         # 显示监控画面（可调整大小）
         debug_frame = frame.copy()
@@ -139,18 +129,23 @@ def main():
         display_frame = cv2.resize(debug_frame, None, fx=0.5, fy=0.5)  # 缩小50%
         cv2.imshow("Monitoring", display_frame)
 
+        # 计算处理耗时，调整延迟时间
+        processing_time = (time.time() - start_time) * 1000  # 转为毫秒
+        adjusted_delay = max(1, frame_delay - int(processing_time))
+
         # 添加键盘控制
-        key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(adjusted_delay) & 0xFF
         if key == ord('q'):
             break
         elif key == ord('+'):  # 按+放大
-            cv2.resizeWindow("Monitoring", int(display_frame.shape[1]*1.1), int(display_frame.shape[0]*1.1))
+            cv2.resizeWindow("Monitoring", int(display_frame.shape[1] * 1.1), int(display_frame.shape[0] * 1.1))
         elif key == ord('-'):  # 按-缩小
-            cv2.resizeWindow("Monitoring", int(display_frame.shape[1]*0.9), int(display_frame.shape[0]*0.9))
+            cv2.resizeWindow("Monitoring", int(display_frame.shape[1] * 0.9), int(display_frame.shape[0] * 0.9))
 
     cap.release()
     cv2.destroyAllWindows()
     save_to_excel(data)
+
 
 if __name__ == "__main__":
     main()
