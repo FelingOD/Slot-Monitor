@@ -24,6 +24,10 @@ data = {
 spin_count = 0
 previous_balance = None
 previous_counter = None
+screenshot_dir = "screenshots"  # 截图保存目录
+
+# 创建截图目录
+os.makedirs(screenshot_dir, exist_ok=True)
 
 def extract_number(frame, region):
     """从指定区域提取数字，失败返回None"""
@@ -45,6 +49,16 @@ def extract_number(frame, region):
     except Exception as e:
         print(f"识别数字时出错: {str(e)}")
         return None
+
+def save_screenshot(frame, counter_value):
+    """保存当前帧截图"""
+    try:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{screenshot_dir}/counter_{counter_value if counter_value is not None else 'null'}_{timestamp}.png"
+        cv2.imwrite(filename, frame)
+        print(f"已保存截图: {filename}")
+    except Exception as e:
+        print(f"保存截图失败: {str(e)}")
 
 def save_to_excel(data):
     """保存数据到Excel"""
@@ -85,6 +99,7 @@ def main():
             # 检测计数器是否减少了1
             if previous_counter is not None and current_counter == previous_counter - 1:
                 print(f"计数器减少1: {previous_counter} → {current_counter}")
+                save_screenshot(frame, current_counter)
 
                 # 记录数据（所有字段都支持None值）
                 spin_count += 1
