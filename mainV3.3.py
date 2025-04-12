@@ -10,7 +10,7 @@ import os
 pytesseract.pytesseract.tesseract_cmd = r'E:\Tesseract-OCR\tesseract.exe'
 
 # 定义监控区域
-BALANCE_REGION = (420, 55, 260, 95)  # 区域A：余额显示区域 (x, y, w, h)
+BALANCE_REGION = (400, 55, 280, 95)  # 区域A：余额显示区域 (x, y, w, h)
 COUNTER_REGION = (1670, 1010, 90, 50)  # 区域B：计数器区域
 
 # 初始化数据存储
@@ -50,7 +50,7 @@ def save_to_excel(data):
     """保存数据到Excel"""
     try:
         df = pd.DataFrame(data)
-        filename = f"E:\\GitHubProj\\Slot-Monitor\\slot数据采集源表{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        filename = f"E:\\GitHubProj\\Slot-Monitor\\documents\\slot数据采集源表{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
         writer = pd.ExcelWriter(filename, engine='xlsxwriter')
         df.to_excel(writer, sheet_name='Balance Data', index=False)
         writer.close()
@@ -62,7 +62,7 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "videos\\4.11,16.14,500z.mp4"
+    video_path = "videos\\4.12,1123.mp4"
     cap = cv2.VideoCapture(video_path)
 
     # 创建可调整大小的窗口
@@ -79,7 +79,7 @@ def main():
         current_counter = extract_number(frame, COUNTER_REGION)
 
         # 处理余额数据（如果识别失败则设为None）
-        current_balance = current_balance_raw + 30000 if current_balance_raw is not None else None
+        current_balance = current_balance_raw + 600000 if current_balance_raw is not None else None
 
         if current_counter is not None:
             # 检测计数器是否减少了1
