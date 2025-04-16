@@ -7,11 +7,12 @@ import time
 import os
 
 # 设置Tesseract路径
-pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'E:\Tesseract-OCR\tesseract.exe'
 
 # 定义监控区域
-BALANCE_REGION = (400, 60, 280, 95)  # 区域A：余额显示区域 (x, y, w, h)
-COUNTER_REGION = (1640, 1010, 90, 50)  # 区域B：计数器区域
+BALANCE_REGION = (395, 55, 285, 80)  # 区域A：余额显示区域 (x, y, w, h)
+COUNTER_REGION = (1680, 1010, 95, 50)  # 区域B：计数器区域
 
 # 初始化数据存储
 data = {
@@ -50,7 +51,8 @@ def save_to_excel(data):
     """保存数据到Excel"""
     try:
         df = pd.DataFrame(data)
-        filename = f"D:\\GitHubProj\\Slot-Monitor\\documents\\slot数据采集源表{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        # filename = f"D:\\GitHubProj\\Slot-Monitor\\documents\\slot数据采集源表{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        filename = f"E:\\GitHubProj\\Slot-Monitor\\documents\\slot数据采集源表{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
         writer = pd.ExcelWriter(filename, engine='xlsxwriter')
         df.to_excel(writer, sheet_name='Balance Data', index=False)
         writer.close()
@@ -62,7 +64,7 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "videos\\415,2021,100z.mp4"
+    video_path = "videos\\416,1437,500z.mp4"
     cap = cv2.VideoCapture(video_path)
 
     # 创建可调整大小的窗口
