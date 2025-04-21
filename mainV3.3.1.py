@@ -64,7 +64,7 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "videos\\417,1355,500z.mp4"
+    video_path = "videos\\421,1159,500z.mp4"
     cap = cv2.VideoCapture(video_path)
 
     # 创建可调整大小的窗口
