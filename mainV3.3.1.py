@@ -10,9 +10,13 @@ import os
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 pytesseract.pytesseract.tesseract_cmd = r'E:\Tesseract-OCR\tesseract.exe'
 
-# 定义监控区域
-BALANCE_REGION = (395, 55, 285, 80)  # 区域A：余额显示区域 (x, y, w, h)
-COUNTER_REGION = (1680, 1010, 95, 50)  # 区域B：计数器区域
+# 定义监控区域（横屏）
+#BALANCE_REGION = (395, 55, 285, 80)  # 区域A：余额显示区域 (x, y, w, h)
+#COUNTER_REGION = (1680, 1010, 95, 50)  # 区域B：计数器区域
+
+# 定义监控区域（竖屏）
+BALANCE_REGION = (790, 40, 160, 40)  # 区域A：余额显示区域
+COUNTER_REGION = (953, 1040, 50, 30)  # 区域B：计数器区域
 
 # 初始化数据存储
 data = {
@@ -64,7 +68,7 @@ def main():
     global spin_count, previous_balance, previous_counter
 
     # 使用视频文件
-    video_path = "videos\\421,1159,500z.mp4"
+    video_path = "videos\\424.1710.500z.mp4"
     cap = cv2.VideoCapture(video_path)
 
     # 创建可调整大小的窗口
@@ -81,7 +85,7 @@ def main():
         current_counter = extract_number(frame, COUNTER_REGION)
 
         # 处理余额数据（如果识别失败则设为None）
-        current_balance = current_balance_raw + 600000 if current_balance_raw is not None else None
+        current_balance = current_balance_raw + 50000000 if current_balance_raw is not None else None
 
         if current_counter is not None:
             # 修改点：检测计数器是否有变化（原：仅检测减少1）
