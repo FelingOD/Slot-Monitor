@@ -47,3 +47,44 @@ Sub SpinWheelWithProbabilities()
     logSheet.Cells(logRow, "S").Value = "旋转时间: " & Now
     logSheet.Cells(logRow, "T").Value = "结果: " & selectedResult
 End Sub
+
+Sub SpinBaiyWheel()
+    
+    Dim baiyRewardArr(1 to 12) As Double
+    Dim baiyProbabilityArr(1 to 12) As Double
+    Dim result As Double
+
+
+    Dim i As Long
+    
+    For i=1 To 12
+        'baiyRewardArr(i) = ThisWorkbook.Sheets("转盘").Range("E" & i+2)
+        'baiyProbabilityArr(i) = ThisWorkbook.Sheets("转盘").Range("E" & i+3)
+        baiyRewardArr(i) = ThisWorkbook.Sheets("转盘").Range("E3").Offset(0, i - 1).Value
+        baiyProbabilityArr(i) = ThisWorkbook.Sheets("转盘").Range("E4").Offset(0, i - 1).Value
+    Next i
+
+    'For i = 1 To 12
+    '    Debug.Print "baiyRewardArr(" & i & ") = " & baiyRewardArr(i)
+    'Next i
+
+    'For i = 1 To 12
+    '    Debug.Print "baiyProbabilityArr(" & i & ") = " & baiyProbabilityArr(i)
+    'Next i
+
+    
+    '0-1随机一个数
+    Randomize
+    randNum = Rnd
+    Debug.Print "randNum = " & randNum '打印随机数
+
+    Dim ii As Long
+    For ii = 1 to 12
+        If  1-baiyProbabilityArr(ii)>=randNum Then
+            result=baiyRewardArr(ii)
+            ThisWorkbook.Sheets("转盘").Range("T1").Offset(1, 0).Value="您这次白银转盘获得"&CStr(result)&"个小票"
+            Exit For
+        End If
+    Next ii
+
+End Sub
